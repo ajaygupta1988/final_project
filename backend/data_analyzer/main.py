@@ -1,4 +1,4 @@
-import sys, os, time, uvicorn
+import sys, os, time
 path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path)
 from typing import Union
