@@ -69,4 +69,3 @@ jobs:
       - name: Deploy job
         run: |
           modal deploy backend/data_collector/main.py
-modal token set --token-id ak-xa4UjfmykU2xDvmE7s7kC0 --token-secret as-91hXMkSRtErc1uhRHOD9FX 
