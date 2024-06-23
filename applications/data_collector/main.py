@@ -13,16 +13,16 @@ def example_task():
 
     print("completed data analysis.")
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     # start the collector task
-#     task_scheduler = Scheduler(interval=10, task=example_task)
-#     task_scheduler.start()
-#     yield
-#     # stop the collector task
-#     task_scheduler.stop()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # start the collector task
+    task_scheduler = Scheduler(interval=10, task=example_task)
+    task_scheduler.start()
+    yield
+    # stop the collector task
+    task_scheduler.stop()
 
-data_collector_app = FastAPI()
+data_collector_app = FastAPI(lifespan=lifespan)
 
 
 
