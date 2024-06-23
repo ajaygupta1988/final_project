@@ -35,6 +35,7 @@ def read_root():
 #MODAL DEPLOYMENT
 app = App("data_analyzer")
 
+image = Image.debian_slim()
 
 @app.function(image=image)
 @asgi_app()

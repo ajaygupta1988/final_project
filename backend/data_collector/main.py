@@ -8,7 +8,7 @@ from components.scheduler import Scheduler
 from modal import Image, App, asgi_app
 
 
-image = Image.debian_slim()
+
 
 
 # @asynccontextmanager
@@ -42,6 +42,7 @@ def health_check():
 #MODAL DEPLOYMENT
 app = App("data_collector")
 
+image = Image.debian_slim()
 
 @app.function(image=image)
 @asgi_app()
