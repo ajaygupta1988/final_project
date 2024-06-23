@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: "dev_user"
+      POSTGRES_PASSWORD: "dev_user"
+      POSTGRES_DB: "dev_db"
+      ADDITIONAL_POSTGRES_DB: "test_db"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+  # rabbitmq:
+  #   image: rabbitmq:3.10.5-management
+  #   container_name: milk-rabbit
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   volumes:
+  #     - ./.docker-data/.rabbit-data:/var/lib/rabbitmq/
+  #     - ./.docker-data/.rabbit-log:/var/log/rabbitmq
+volumes:
+  postgres_data:

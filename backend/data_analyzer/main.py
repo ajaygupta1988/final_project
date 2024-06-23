@@ -1,5 +1,5 @@
 import sys, os, time, uvicorn
-path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path)
 from typing import Union
 from fastapi import FastAPI
@@ -15,27 +15,18 @@ def example_task():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # start the collector task
+    # start the analyzing task
     task_scheduler = Scheduler(interval=10, task=example_task)
     task_scheduler.start()
     yield
-    # stop the collector task
+    # stop the analyzing task
     task_scheduler.stop()
 
-data_collector_app = FastAPI(lifespan=lifespan)
+data_analyzer_app = FastAPI(lifespan=lifespan)
 
 
 
-@data_collector_app.get("/")
+@data_analyzer_app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "data_analyzer_app"}
 
-
-@data_collector_app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-
-if __name__ == "__main__":
-    uvicorn.run(data_collector_app, host="0.0.0.0", port=8001)
