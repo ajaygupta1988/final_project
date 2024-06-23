@@ -1,1 +1,1 @@
-data_collector: fastapi run applications/data_collector/main.py --host 0.0.0.0 --port 80
+collector: fastapi run applications/data_collector/main.py --host 0.0.0.0 --port 80
