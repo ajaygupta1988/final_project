@@ -1,38 +1,49 @@
-import sys, os, time, uvicorn
+import sys, os, time
 path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(path)
 from typing import Union
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from components.scheduler import Scheduler
+from modal import Image, App, asgi_app
+
+
+image = Image.debian_slim()
+
+
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     # start the collector task
+#     task_scheduler = Scheduler(interval=10, task=example_task)
+#     task_scheduler.start()
+#     yield
+#     # stop the collector task
+#     task_scheduler.stop()
+
+data_collector_app = FastAPI()
 
 def example_task():
     print("starting data analysis.")
     #todo - data collection happens here
-    time.sleep(5)
+    time.sleep(0.5)
 
-    print("completed data analysis.")
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # start the collector task
-    task_scheduler = Scheduler(interval=10, task=example_task)
-    task_scheduler.start()
-    yield
-    # stop the collector task
-    task_scheduler.stop()
-
-data_collector_app = FastAPI(lifespan=lifespan)
-
-
+    return {"detail": "completed data analysis."}
 
 @data_collector_app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return example_task()
+    
 
 
-@data_collector_app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@data_collector_app.get("/health")
+def health_check():
+    return {"detail": "I am healthy"}
 
 
+app = App()
+
+
+@app.function(image=image)
+@asgi_app()
+def fastapi_app():
+    return data_collector_app

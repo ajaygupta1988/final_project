@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+    services:
+    postgres:
+      image: postgres
+
+      env:
+        POSTGRES_PASSWORD: dev_user
+        POSTGRES_USER: dev_user
+        POSTGRES_DB: test_db
+
+      options: >-
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+      ports:
+        - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python all python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+          architecture: x64
+
+      - name: Install Python Virtual ENV
+        run: pip3 install virtualenv
+
+      - name: Setup Virtual env
+        uses: actions/cache@v2
+        id: cache-venv
+        with:
+          path: venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+
+      - name: Activate and Install Depencies into Virtual env
+        run: python -m venv venv && source venv/bin/activate &&
+          pip3 install -r requirements.txt
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+
+      # Install all the app dependencies
+      - name: Install dependencies
+        run: pip3 install -r requirements.txt
+
+      # Build the app and run tests
+      - name: Build and Run Test
+        run: . venv/bin/activate && pytest
+
+  continuous-deployment:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+
+    steps:
+      - name: Deploy job
+        run: |
+          modal deploy backend/data_collector/main.py
+modal token set --token-id ak-xa4UjfmykU2xDvmE7s7kC0 --token-secret as-91hXMkSRtErc1uhRHOD9FX 
