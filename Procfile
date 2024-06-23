@@ -1,1 +1,1 @@
-web fastapi run applications/data_collector/main.py --host=0.0.0.0 --port=${PORT:-5000}
+web: uvicorn applications.data_collector.main:data_collector_app --host=0.0.0.0 --port=${PORT:-5000}
