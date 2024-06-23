@@ -8,21 +8,21 @@ jobs:
   continuous-integration:
     runs-on: ubuntu-latest
     services:
-    postgres:
-      image: postgres
+      postgres:
+        image: postgres
 
-      env:
-        POSTGRES_PASSWORD: dev_user
-        POSTGRES_USER: dev_user
-        POSTGRES_DB: test_db
+        env:
+          POSTGRES_PASSWORD: dev_user
+          POSTGRES_USER: dev_user
+          POSTGRES_DB: test_db
 
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
-      ports:
-        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v2
