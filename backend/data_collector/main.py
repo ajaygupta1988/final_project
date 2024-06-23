@@ -39,8 +39,8 @@ def read_root():
 def health_check():
     return {"detail": "I am healthy"}
 
-
-app = App()
+#MODAL DEPLOYMENT
+app = App("data_collector")
 
 
 @app.function(image=image)

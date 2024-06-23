@@ -5,6 +5,7 @@ from typing import Union
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from components.scheduler import Scheduler
+from modal import Image, App, asgi_app
 
 def example_task():
     print("starting data analysis.")
@@ -30,3 +31,12 @@ data_analyzer_app = FastAPI(lifespan=lifespan)
 def read_root():
     return {"Hello": "data_analyzer_app"}
 
+
+#MODAL DEPLOYMENT
+app = App("data_analyzer")
+
+
+@app.function(image=image)
+@asgi_app()
+def fastapi_app():
+    return data_analyzer_app

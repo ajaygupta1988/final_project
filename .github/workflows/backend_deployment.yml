@@ -54,8 +54,7 @@ jobs:
       - name: Install dependencies
         run: pip3 install -r requirements.txt
 
-      # Build the app and run tests
-      - name: Build and Run Test
+      - name: Run Tests
         run: . venv/bin/activate && pytest
 
   continuous-deployment:
@@ -78,6 +77,10 @@ jobs:
       - name: Install dependencies
         run: pip3 install -r requirements.txt
 
-      - name: Deploy job
+      - name: Deploy collector app
         run: |
           modal deploy backend/data_collector/main.py
+
+      - name: Deploy analyzer app
+        run: |
+          modal deploy backend/data_analyzer/main.py
