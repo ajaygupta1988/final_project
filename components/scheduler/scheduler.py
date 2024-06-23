@@ -40,7 +40,6 @@ class Scheduler:
         """
         Stops the scheduler from running the task.
         """
-        print('stopping scheduler')
         with self._lock:
             self._is_running = False
             if self._timer:
