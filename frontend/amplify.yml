@@ -1,17 +1,23 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm install
-        - npm run test
-    build:
-      commands:
-        - npm build
-  artifacts:
-    baseDirectory: dist
-    files:
-      - "**/*"
-  cache:
-    paths:
-      - node_modules/**/*
+applications:
+  - appRoot: frontend
+    env:
+      variables:
+        key: value
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+            - echo "VITE_API_URL=$VITE_API_URL" >> frontend/.env
+            - npm run test
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
