@@ -1,5 +1,6 @@
 import sys, os
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import make_asgi_app
@@ -12,10 +13,19 @@ from schemas import (
     SymbolLookUpResponse,
     ExternalResponseDataSchema,
     EfficientDataResponse,
+    MetaDataSchema,
 )
 
 
 data_analyzer_app = FastAPI()
+
+data_analyzer_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 instrumentator = Instrumentator().instrument(data_analyzer_app)
 
@@ -34,9 +44,25 @@ def health_check():
 
 
 @data_analyzer_app.get(
+    "/get_available_symbols",
+    description="API to lookup a stock ticker by keywords",
+    response_model=list[MetaDataSchema],
+)
+async def get_available_symbols():
+    try:
+        mongo_query_manager = QueryManager()
+        result = await mongo_query_manager.get_available_symbols()
+
+        return result
+    except:
+        raise HTTPException(status_code=404, detail="Something went wrong")
+
+
+@data_analyzer_app.get(
     "/symbol_lookup/{keywords}",
     description="API to lookup a stock ticker by keywords",
     response_model=list[SymbolLookUpResponse],
+    response_model_by_alias=False,
 )
 async def look_up_symbol(keywords: str):
     try:
@@ -81,7 +107,8 @@ async def get_symbol_data_for_user(symbol: str):
         result["source"] = source
 
         return result
-    except:
+    except Exception as e:
+        print(e)
         raise HTTPException(status_code=404, detail="Something went wrong")
 
 

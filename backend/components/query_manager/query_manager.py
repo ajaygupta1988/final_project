@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 from components import Utils
 from datetime import datetime, timedelta
-from schemas import ExternalResponseDataSchema, DataSchema
+from schemas import ExternalResponseDataSchema, DataSchema, MetaDataSchema
 from config import settings
 
 
@@ -49,6 +49,14 @@ class QueryManager:
     async def get_symbol_data(self, symbol: str) -> list[DataSchema]:
         result = []
         cursor = self.data_collection.find({"symbol": symbol})
+        async for document in cursor:
+            document["_id"] = str(document["_id"])
+            result.append(document)
+        return result
+
+    async def get_available_symbols(self) -> list[MetaDataSchema]:
+        result = []
+        cursor = self.meta_data_collection.find()
         async for document in cursor:
             document["_id"] = str(document["_id"])
             result.append(document)

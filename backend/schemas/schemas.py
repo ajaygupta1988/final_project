@@ -137,6 +137,7 @@ class EfficientDataResponse(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
+                "source": "internal",
                 "columns": ["unix_month_time", "TSLA"],
                 "data": [
                     [1717200000, 1714521600, 1711929600],

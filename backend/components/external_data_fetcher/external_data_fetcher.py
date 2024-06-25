@@ -2,6 +2,7 @@ import aiohttp
 import ssl
 import certifi
 from config import settings
+from schemas import SymbolLookUpResponse
 
 
 class ExternalDataFetcher:
@@ -18,7 +19,7 @@ class ExternalDataFetcher:
                 data = await response.json()
                 return data
 
-    async def search_for_symbol(self, keywords):
+    async def search_for_symbol(self, keywords) -> list[SymbolLookUpResponse]:
         url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={keywords}&apikey={self.api_key}"
         async with aiohttp.ClientSession(connector=self.conn) as session:
             async with session.get(url) as response:
