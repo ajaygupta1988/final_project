@@ -6,9 +6,11 @@ class MessagingQueue:
     def __init__(self, client=None) -> None:
         # queue instace class
         self.client = client or boto3.client(
-            "sqs", endpoint_url=settings.aws_sqs_endpoint
+            "sqs",
+            region_name="us-east-1",
         )
         self.queue_url = settings.queue_url
+        print(f"Mesage QUEUE....{self.queue_url}....")
 
     def send_message(self, message_body):
         response = self.client.send_message(

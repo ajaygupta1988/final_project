@@ -21,6 +21,7 @@ import TickerList from "../../components/tickerList";
 import DataViwer from "../../components/dataViewer";
 import { serverCall } from "../../serverCall/serverCall";
 import { SunIcon, MoonIcon, QuestionIcon } from "@chakra-ui/icons";
+import { debounce } from "lodash";
 
 const defaultOptions = [
   { symbol: "IBM" },
@@ -106,13 +107,22 @@ const Home = () => {
     }
   };
 
-  const onSearchPicker = (term) => {
-    const keywords = term.target.value;
-    if (keywords.length > 3) {
+  // Define a debounce delay (e.g., 300ms)
+  const debounceDelay = 300;
+
+  // Throttled function using debounce
+  const throttledSearchPicker = debounce((keywords, setTickerOptions) => {
+    if (keywords.length > 2) {
       serverCall(`${lookupEndpoint}/${keywords}`).then((response) => {
-        setTickerOptions(response);
+        setTickerOptions([...response]);
       });
     }
+  }, debounceDelay);
+
+  // Original function with throttling applied
+  const onSearchPicker = (term) => {
+    const keywords = term.target.value;
+    throttledSearchPicker(keywords, setTickerOptions);
   };
 
   const onSelect = ({ item }) => {
@@ -122,12 +132,6 @@ const Home = () => {
       tickerList.push({ symbol: value });
       setTickers([...tickerList]);
     }
-    console.log(
-      !tickers.find((d) => d.symbol === "AAPL"),
-      item,
-      tickers,
-      "AJAY 95"
-    );
     onTickerChange(value);
   };
 
