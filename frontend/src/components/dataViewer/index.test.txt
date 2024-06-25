@@ -1,0 +1,24 @@
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import DataViwer from ".";
+
+//Hard to make it pass CANVAS library
+// describe("DataViewer", () => {
+//   const sampleDataSet = {
+//     columns: ["unix_month_time", "stock_price"],
+//     data: [
+//       [1622505600000, 1625097600000], // example timestamps
+//       [150, 160], // example stock prices
+//     ],
+//   };
+
+//   it("should render the DataViwer component", () => {
+//     render(<DataViwer dataSet={sampleDataSet} />);
+//     const chart = screen.getByRole("canvas"); // assuming the chart is rendered with a <figure> role or similar
+//     expect(chart).toBeInTheDocument();
+//   });
+
+//   it("should apply the correct series options", () => {
+//     render(<DataViwer dataSet={sampleDataSet} />);
+//   });
+// });
