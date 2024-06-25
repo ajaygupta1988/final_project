@@ -9,12 +9,12 @@ This project aims to compare historical prices of different stocks over a long p
 - Single data load per stock symbol to optimize performance.
 
 ## External Stock API:
-For this application I am using Alpha Vantage (`https://www.alphavantage.co`) a free public api to get the historical stock prices of a particular stock by Ticker (Example:TSLA). Their documentation is pretty simple and have API key based access.
+For this application I am using Alpha Vantage (https://www.alphavantage.co) a free public api to get the historical stock prices of a particular stock by Ticker (Example:TSLA). Their documentation is pretty simple and have API key based access.
 
 ## Techstack
 - Database: MongoDB is used as persistance dtabase. Its a no sql database so requires minimal deployment efforts and ideal for datascience project where data structure of external service is unknown and unpredictable.
 - Frontend: React web app interacting with a backend service. This will be hosted on aws Amplify with full CI/CD using amplify.yml file (In Progress)
-- Backend: There are two seprate serverless backend services that you can run in parallel. Written is python using FastApi framework and deployed on Modal Serverless platform with full CI/CD pipline managed through Github Actions. It similar to aws Lambda but will minimal deployment effort. `https://modal.com/`
+- Backend: There are two seprate serverless backend services that you can run in parallel. Written is python using FastApi framework and deployed on Modal Serverless platform with full CI/CD pipline managed through Github Actions. It similar to aws Lambda but will minimal deployment effort. https://modal.com
   - Collector Service: To collect data and save it to MongoDB upon request. It will check if data exist or is stale and then update it on demand. The update trigger will be managed by simple messaging queue. 
   - Analyzer Service: This is a Rest Api service connected to the web application and have Api's to display data on the front end web application.
 
@@ -94,12 +94,13 @@ Primary purpose of this service is to collect data from an external server and s
     ```bash
     uvicorn backend.data_collector_app.main:data_collector_app --host=0.0.0.0 --port=${PORT:-5000}
     ```
-Once the server is running, you can access the app at `http://localhost:5000` (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
+
+Once the server is running, you can access the app at http://localhost:5000 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
 
 - **GET /**: Health check api
 - **GET /docs**: To see the swagger UI documentation for the service.
 - **GET /metrics**: To see the prometheus metrics.
-- **Get /load_symbol_data/{symbol}**: This is an endpoint to initita data loading for a STOCK (Example: `http://localhost:5000/load_symbol_data/TSLA` ). Max 20 years of monthly data is loaded if available. The endpoint itself returns a simple success message. To confirm is data is loaded you need to start the Data Analyzer app (Next Section) and use `http://localhost:5000/get_symbol_data/TSLA` api to retrive data.
+- **Get /load_symbol_data/{symbol}**: This is an endpoint to initita data loading for a STOCK (Example: http://localhost:5000/load_symbol_data/TSLA ). Max 20 years of monthly data is loaded if available. The endpoint itself returns a simple success message. To confirm is data is loaded you need to start the Data Analyzer app (Next Section) and use http://localhost:5000/get_symbol_data/TSLA api to retrive data.
 
 ### Run Data Analyzer/Web Service: 
 
@@ -108,9 +109,10 @@ This is a Rest Api service connected to the web application and have api's to di
     ```bash
     uvicorn backend.data_analyzer_app.main:data_analyzer_app --host=0.0.0.0 --port=${PORT:-5001}
     ```
-    Make sure the PORT is different from collector app.
+    
+Make sure the PORT is different from collector app.
    
-   Once the server is running, you can access the app at `http://localhost:5001` (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
+Once the server is running, you can access the app at http://localhost:5001 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
 
 - **GET /**: Health check api
 - **GET /docs**: To see the swagger UI documentation for the service.
@@ -122,13 +124,11 @@ This is a Rest Api service connected to the web application and have api's to di
 
 Run the following commands:
 
-    ```bash
-    cd frontend
-    ```
 
     ```bash
-    npm run dev
+    cd frontend && npm run dev
     ```
+
 
 Once the server is running, you can access the web app at http://localhost:3001 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
 
