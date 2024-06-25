@@ -1,0 +1,21 @@
+name: Continuous Integration pipeline for frontend. Deployment happens on AWS amplify server check ./frontend/amplify.yml
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: frontend
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+      - run: npm ci
+      - name: Run tests dependencies
+      - run: npm test

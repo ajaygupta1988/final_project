@@ -67,7 +67,13 @@ To run this project locally you will also need to setup a local mongodb server, 
     docker-compose up
     ```
 
+2. create aws messaging queue in your local environment
 
+`aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name  data-collector-queue`
+
+it should return the following: If you key is different please update QUEUE_URL
+
+`QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/data-collector-queue`
 
 ## Run tests
 
@@ -80,7 +86,7 @@ To run this project locally you will also need to setup a local mongodb server, 
 2. Frontend Tests:
 
     ```bash
-    TODO
+    cd frontend && npm run test
     ```
 
 

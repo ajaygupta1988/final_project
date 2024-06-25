@@ -1,7 +1,9 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useLayoutEffect, useState } from "react";
+import uPlot from "uplot";
 import UplotReact from "uplot-react";
-import { Flex, useColorModeValue, useDimensions } from "@chakra-ui/react";
+import { Box, useColorModeValue, useDimensions, Flex } from "@chakra-ui/react";
 import "uplot/dist/uPlot.min.css";
+import moment from "moment";
 
 export const chartColors = [
   "gray",
@@ -27,15 +29,29 @@ export const chartColors = [
   "#f95d6a",
   "#DD6B20",
 ];
+import useResizeObserver from "@react-hook/resize-observer";
+import noData from "./nodata.json";
+
+const useSize = (target) => {
+  const [size, setSize] = useState();
+
+  useLayoutEffect(() => {
+    setSize(target.current.getBoundingClientRect());
+  }, [target]);
+
+  // Where the magic happens
+  useResizeObserver(target, (entry) => setSize(entry.contentRect));
+  return size;
+};
 
 export const DataViwer = ({
-  dataSet = sample,
+  dataSet = noData,
   height = 650,
   width = 1600,
   loading = false,
 }) => {
-  const elementRef = useRef();
-  const dimensions = useDimensions(elementRef, true);
+  const elementRef = useRef(null);
+  const size = useSize(elementRef);
   const chartTextColor = useColorModeValue("#718096", "#fff");
   const { columns, data } = dataSet;
 
@@ -47,15 +63,15 @@ export const DataViwer = ({
         if (item === "unix_month_time") {
           result = {
             label: "datetime",
-            value: (self, rawValue) => rawValue,
+            value: (self, rawValue) => moment.unix(rawValue).format("ll"),
           };
         } else {
           result = {
             label: item.replaceAll("_", " "),
             width: 2,
             stroke: chartColors[i],
-            scale: "impedance",
-            points: { show: true, fill: chartColors[i] },
+            scale: "y",
+            points: { show: false, fill: chartColors[i] },
             spanGaps: true,
           };
         }
@@ -66,35 +82,69 @@ export const DataViwer = ({
   }, [dataSet]);
 
   const renderChart = useCallback(() => {
-    const options = {
-      width: width,
-      height: height,
-      axes: [
-        {
-          label: "Time Period",
-          stroke: chartTextColor,
-          labelFont: "12px Poppins, sans-serif",
+    let options = {};
+    if (dataSet.columns.length > 0) {
+      options = {
+        width: size?.width || width,
+        height: size?.height - 100 || height,
+        axes: [
+          {
+            label: "Time Period",
+            stroke: chartTextColor,
+            labelFont: "12px Poppins, sans-serif",
+          },
+          {
+            scale: "y",
+            label: "Stock Price",
+            labelFont: "Poppins, sans-serif",
+            stroke: chartTextColor,
+          },
+        ],
+        series: getSeries(),
+        scales: {
+          x: { time: true },
         },
-        {
-          scale: "impedance",
-          label: "Stock Price",
-          labelFont: "Poppins, sans-serif",
-          stroke: chartTextColor,
-          values: (self, ticks) => ticks.map((rawValue) => rawValue),
+      };
+    } else {
+      options = {
+        width: size?.width || width,
+        height: size?.height - 100 || height,
+        axes: [
+          {
+            label: "Time Period",
+            stroke: chartTextColor,
+            labelFont: "12px Poppins, sans-serif",
+          },
+          {
+            scale: "",
+            label: "Stock Price",
+            labelFont: "Poppins, sans-serif",
+            stroke: chartTextColor,
+          },
+        ],
+        scales: {
+          x: {
+            range(u, dataMin, dataMax) {
+              if (dataMin == null) return [1717200000, 944006400];
+              return [dataMin, dataMax];
+            },
+          },
+          y: {
+            range(u, dataMin, dataMax) {
+              if (dataMin == null) return [0, 100];
+              return uPlot.rangeNum(dataMin, dataMax, 1, true);
+            },
+          },
         },
-      ],
-      series: getSeries(),
-      scales: {
-        x: { time: true },
-      },
-      // plugins: [touchZoomPlugin],
-    };
+        // plugins: [touchZoomPlugin],
+      };
+    }
+
     return <UplotReact options={options} data={data} />;
   }, [dataSet]);
 
   return (
-    <Flex overflowX={"overlay"} ref={elementRef}>
-      {dimensions?.borderBox?.height}
+    <Flex overflowX={"overlay"} ref={elementRef} h={"100%"} width={"100%"}>
       <Flex>{renderChart()}</Flex>
     </Flex>
   );

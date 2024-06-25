@@ -30,7 +30,7 @@ export function serverCall(endpoint) {
             position: 'top',
             variant: 'subtle',
             title: 'Session Expired',
-            description: 'Unable to create user account.',
+            description: 'Oops! Somthing went wrong.',
             status: 'error',
             isClosable: true,
           });

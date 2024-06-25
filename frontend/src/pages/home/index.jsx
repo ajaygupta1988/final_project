@@ -1,15 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 import { loader } from "../../uiComponents";
-import { Box, IconButton, Stack, Text, useColorMode } from "@chakra-ui/react";
+import {
+  Tooltip,
+  IconButton,
+  Stack,
+  Text,
+  useColorMode,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react";
 import TickerSelector from "../../components/tickerSelector";
 import TickerList from "../../components/tickerList";
 import DataViwer from "../../components/dataViewer";
 import { serverCall } from "../../serverCall/serverCall";
-import { SunIcon, MoonIcon } from "@chakra-ui/icons";
+import { SunIcon, MoonIcon, QuestionIcon } from "@chakra-ui/icons";
 
-const defaultOptions = ["TSLA", "AAPL", "GOOG", "NVDA", "MSFT"];
+const defaultOptions = [
+  { symbol: "UBER" },
+  { symbol: "AAPL" },
+  { symbol: "GOOG" },
+  { symbol: "NVDA" },
+  { symbol: "MSFT" },
+];
 
 const Home = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const [tickers, setTickers] = useState([]);
   const [tickerOptions, setTickerOptions] = useState([]);
@@ -32,19 +54,21 @@ const Home = () => {
     if (dataInventory[picker]) {
       loadChartData(dataInventory[picker]);
     } else {
-      serverCall(`${getDataEndpoint}/${picker}`).then((response) => {
-        setLoading(true);
-        setDataInventory({
-          [picker]: {
-            columns: response.columns,
-            data: response.data,
-            summary: response.summary,
-          },
-          ...dataInventory,
-        });
-        loadChartData(response);
-        setLoading(false);
-      });
+      serverCall(`${getDataEndpoint}/${picker}`)
+        .then((response) => {
+          setLoading(true);
+          setDataInventory({
+            [picker]: {
+              columns: response.columns,
+              data: response.data,
+              summary: response.summary,
+            },
+            ...dataInventory,
+          });
+          loadChartData(response);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
   };
 
@@ -138,7 +162,7 @@ const Home = () => {
         spacing={18}
       >
         <TickerSelector
-          options={[{ symbol: "AAPL" }, { symbol: "GOOG" }] || tickerOptions}
+          options={tickerOptions?.length === 0 ? defaultOptions : tickerOptions}
           onChange={onSearchPicker}
           onSelect={onSelect}
         />
@@ -157,15 +181,41 @@ const Home = () => {
       >
         <Stack direction="row" justify="space-between" w={"100%"}>
           <Text fontSize="2xl">Stock Chart</Text>
-          <IconButton
-            aria-label="Search database"
-            icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-            onClick={toggleColorMode}
-          />
+          <Stack direction={"row"}>
+            <IconButton
+              aria-label="Search database"
+              icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              onClick={toggleColorMode}
+            />
+            <Tooltip label="Project Information">
+              <IconButton
+                aria-label="Search database"
+                icon={<QuestionIcon />}
+                onClick={onOpen}
+              />
+            </Tooltip>
+          </Stack>
         </Stack>
 
         <DataViwer dataSet={data} />
       </Stack>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Project Information</DrawerHeader>
+
+          <DrawerBody>
+            <Text>Here</Text>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </Stack>
   );
 };

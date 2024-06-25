@@ -16,6 +16,7 @@
     "@choc-ui/chakra-autocomplete": "^5.5.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@react-hook/resize-observer": "^2.0.1",
     "axios": "^1.7.2",
     "framer-motion": "^11.2.11",
     "moment": "^2.30.1",

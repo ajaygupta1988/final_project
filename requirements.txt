@@ -9,3 +9,4 @@ motor==3.4.0
 mongomock_motor==0.0.30
 pandas==2.2.2
 pydantic-settings==2.3.3
+awscli-local==0.22.0
