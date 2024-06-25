@@ -1,5 +1,3 @@
-# Final Project
-
 ## Project Overview
 This project aims to compare historical prices of different stocks over a long period, and visualize them on a basic time series chart spanning several years. The API endpoint retrieves stock data from MongoDB, preloaded by a collector service. If the data is not available in MongoDB, it queries the external Vantage API and immediately responds to the user (to avoid user wait time). After responding, it sends a message to the collector service to load the data into MongoDB for future requests. This ensures that data is loaded only once, even if multiple users request the same stock (e.g., TSLA) simultaneously.
 
@@ -21,17 +19,18 @@ For this application I am using Alpha Vantage (`https://www.alphavantage.co`) a 
   - Analyzer Service: This is a Rest Api service connected to the web application and have Api's to display data on the front end web application.
 
 
+
 # Basic Setup
 
 To run this project, follow these steps:
 
-3. Create a virtual environment (optional but recommended):
+1. Create a virtual environment (optional but recommended):
 
     ```bash
     python3 -m venv .venv
     ```
 
-4. Activate the virtual environment:
+2. Activate the virtual environment:
 
     - On Linux/macOS:
 
@@ -45,17 +44,18 @@ To run this project, follow these steps:
         .\venv\Scripts\activate
         ```
 
-5. Install the dependencies:
+3. Install the dependencies:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-6. Environment File [very important]: Please go to backend/config and rename .env_local to .env before going on the next steps.
+4. Environment File [very important]: Please go to backend/config and rename .env_local to .env before going on the next steps.
 
     ```bash
     ./backend/config and rename .env_local to .env before going on the next steps.
     ```
+
 
 ## Setting up local database with docker
 
@@ -66,6 +66,8 @@ To run this project locally you will also need to setup a local mongodb server, 
     ```bash
     docker-compose up
     ```
+
+
 
 ## Run tests
 
@@ -82,9 +84,12 @@ To run this project locally you will also need to setup a local mongodb server, 
     ```
 
 
-# Backend Servers: There are two seprate backend services that you can run in parallel.
+## Run Backend Servers
 
-## Run Data Collector Service: Primary purpose of this service is to collect data from an external server and save it to our mongodb database. This service will not be connected to the frontend.
+
+### Run Data Collector Service: 
+
+Primary purpose of this service is to collect data from an external server and save it to our mongodb database. This service will not be connected to the frontend.
 
     ```bash
     uvicorn backend.data_collector_app.main:data_collector_app --host=0.0.0.0 --port=${PORT:-5000}
@@ -96,7 +101,9 @@ Once the server is running, you can access the app at `http://localhost:5000` (b
 - **GET /metrics**: To see the prometheus metrics.
 - **Get /load_symbol_data/{symbol}**: This is an endpoint to initita data loading for a STOCK (Example: `http://localhost:5000/load_symbol_data/TSLA` ). Max 20 years of monthly data is loaded if available. The endpoint itself returns a simple success message. To confirm is data is loaded you need to start the Data Analyzer app (Next Section) and use `http://localhost:5000/get_symbol_data/TSLA` api to retrive data.
 
-2. Run Data Analyzer/Web Service: This is a Rest Api service connected to the web application and have api's to display data on the front end web application.
+### Run Data Analyzer/Web Service: 
+
+This is a Rest Api service connected to the web application and have api's to display data on the front end web application.
 
     ```bash
     uvicorn backend.data_analyzer_app.main:data_analyzer_app --host=0.0.0.0 --port=${PORT:-5001}
@@ -111,7 +118,21 @@ Once the server is running, you can access the app at `http://localhost:5000` (b
 - **GET /symbol_lookup/{keyord}**: API to lookup a stock ticker by keywords.
 - **Get /get_symbol_data/{symbol}**: This API endpoint retrieves stock symbol data from MongoDB, preloaded by a collector service. If the data is not available in MongoDB, it queries the external Vantage API and responds immediately to the user (to avoid user wait time). After responding, it sends a message to the collector service to load the data into MongoDB for future requests. This ensures that data is loaded only once, even if multiple users request the same stock (e.g., TSLA) simultaneously. 
 
-## Project Structure
+## Run Frontend application
+
+Run the following commands:
+
+    ```bash
+    cd frontend
+    ```
+
+    ```bash
+    npm run dev
+    ```
+
+Once the server is running, you can access the web app at http://localhost:3001 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
+
+## Project Folder Structure
 ### Backend
 1. components: Contains reusable modules and utilities that are shared between the data_collector_app and data_analyzer_app.
 2. config: Stores configuration settings and environment variables.
