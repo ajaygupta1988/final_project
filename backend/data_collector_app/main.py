@@ -79,7 +79,7 @@ async def load_symbol_data():
             print({"detail": "No message received. wrong call"})
     except Exception as e:
         print(str(e))
-        raise HTTPException(message="Error occured", co)
+        raise HTTPException(message="Error occured", status_code=500)
 
 
 # Prometheus Metrics
@@ -113,7 +113,7 @@ image = modal.Image.debian_slim(python_version="3.10.11").pip_install(
 @app.function(
     image=image,
     secrets=[
-         modal.Secret.from_name("aws-access"),
+        modal.Secret.from_name("aws-access"),
         modal.Secret.from_name("mongodb-secret"),
         modal.Secret.from_name("vantage_api_key"),
         modal.Secret.from_name("messaging-secrets"),

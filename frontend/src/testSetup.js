@@ -1,6 +1,7 @@
 
 import {vi} from "vitest";
 import '@testing-library/jest-dom/vitest'
+import 'vitest-canvas-mock'
 
 window.matchMedia = window.matchMedia || function() {
     return {

@@ -1,5 +1,4 @@
-name: Continuous Integration pipeline for frontend
-deployment happens on AWS amplify server check ./frontend/amplify.yml
+name: Continuous Integration pipeline for frontend deployment happens on AWS amplify server check ./frontend/amplify.yml
 
 on: [push]
 

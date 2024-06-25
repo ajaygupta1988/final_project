@@ -10,6 +10,17 @@ export default defineConfig({
   test: {
     globals:true,
     setupFiles:"src/testSetup.js",
-    environment:'jsdom'
+    environment:'jsdom',
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable',
+      },
+    },
+    server: {
+      deps: {
+        inline: ['vitest-canvas-mock'],
+      },
+    }
+
   }
 });
