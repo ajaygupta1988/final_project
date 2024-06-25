@@ -79,8 +79,8 @@ jobs:
 
       - name: Deploy collector app
         run: |
-          modal deploy backend/data_collector/main.py
+          modal deploy backend/data_collector_app/main.py
 
       - name: Deploy analyzer app
         run: |
-          modal deploy backend/data_analyzer/main.py
+          modal deploy backend/data_analyzer_app/main.py
