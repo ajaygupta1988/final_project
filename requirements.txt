@@ -1,5 +1,6 @@
 fastapi==0.111.0
 pytest==8.2.2
+pytest-env==1.1.3
 modal==0.62.236
 requests==2.32.3
 prometheus-fastapi-instrumentator==7.0.0
