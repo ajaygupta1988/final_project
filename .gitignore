@@ -164,4 +164,4 @@ cython_debug/
 mongodb_data
 
 *prometheus.yml
-
+aws_local

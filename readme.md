@@ -18,7 +18,7 @@ For this application I am using Alpha Vantage (https://www.alphavantage.co) a fr
   - Collector Service: To collect data and save it to MongoDB upon request. It will check if data exist or is stale and then update it on demand. The update trigger will be managed by simple messaging queue. 
   - Analyzer Service: This is a Rest Api service connected to the web application and have Api's to display data on the front end web application.
 
-
+## See pdf file in the repo for system architecture.
 
 # Basic Setup
 
@@ -61,7 +61,7 @@ To run this project, follow these steps:
 
 To run this project locally you will also need to setup a local mongodb server, follow these steps:
 
-1. Run docker-compose in one of your terminal: You can also see and connect to the local database though MongoDB Compass application.
+1. Run docker-compose in one of your terminal: You can also see and connect to the local database though MongoDB Compass application. Docker will also spin up an aws local stack 
 
     ```bash
     docker-compose up
@@ -108,6 +108,8 @@ Once the server is running, you can access the app at http://localhost:5000 (by 
 - **GET /metrics**: To see the prometheus metrics.
 - **Get /load_symbol_data/{symbol}**: This is an endpoint to initita data loading for a STOCK (Example: http://localhost:5000/load_symbol_data/TSLA ). Max 20 years of monthly data is loaded if available. The endpoint itself returns a simple success message. To confirm is data is loaded you need to start the Data Analyzer app (Next Section) and use http://localhost:5000/get_symbol_data/TSLA api to retrive data.
 
+Deployed app url: https://ajaygupta1988--data-collector-fastapi-app.modal.run/
+
 ### Run Data Analyzer/Web Service: 
 
 This is a Rest Api service connected to the web application and have api's to display data on the front end web application.
@@ -124,7 +126,10 @@ Once the server is running, you can access the app at http://localhost:5001 (by 
 - **GET /docs**: To see the swagger UI documentation for the service.
 - **GET /metrics**: To see the prometheus metrics.
 - **GET /symbol_lookup/{keyord}**: API to lookup a stock ticker by keywords.
-- **Get /get_symbol_data/{symbol}**: This API endpoint retrieves stock symbol data from MongoDB, preloaded by a collector service. If the data is not available in MongoDB, it queries the external Vantage API and responds immediately to the user (to avoid user wait time). After responding, it sends a message to the collector service to load the data into MongoDB for future requests. This ensures that data is loaded only once, even if multiple users request the same stock (e.g., TSLA) simultaneously. 
+- **GET /available_symbols**: API to see what stock symbols data is already in the database.
+- **Get /get_symbol_data/{symbol}**: This API endpoint retrieves stock symbol data from MongoDB, preloaded by a collector service. If the data is not available in MongoDB, it queries the external Vantage API and responds immediately to the user (to avoid user wait time). After responding, it sends a message to the collector service to load the data into MongoDB for future requests. This ensures that data is loaded only once, even if multiple users request the same stock (e.g., TSLA) simultaneously.
+
+Deployed app url: https://ajaygupta1988--data-analyzer-fastapi-app.modal.run/docs
 
 ## Run Frontend application
 
