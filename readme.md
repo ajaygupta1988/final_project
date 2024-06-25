@@ -143,6 +143,8 @@ Run the following commands:
 
 Once the server is running, you can access the web app at http://localhost:3001 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
 
+Deployed Frontend app url: https://main.d20tk70v3b77bl.amplifyapp.com/
+
 ## Project Folder Structure
 ### Backend
 1. components: Contains reusable modules and utilities that are shared between the data_collector_app and data_analyzer_app.
@@ -150,6 +152,7 @@ Once the server is running, you can access the web app at http://localhost:3001 
 3. data_analyzer_app: Manages the analysis of collected stock data, including comparison and visualization.
 4. data_collector_app: Handles data collection from external APIs and populates the MongoDB database.
 5. schemas: Defines data schemas and validation rules used across the backend applications.
+6. .github for CI/CD pipes yml files.
 
 ### Frontend
 1. frontend: Contains a React application for the front-end interface, allowing users to interact with the API and visualize stock data.
@@ -159,3 +162,18 @@ Once the server is running, you can access the web app at http://localhost:3001 
 2. .github: GitHub-specific files for workflows and actions.
 3. docker-compose.yml: Docker Compose file for setting up and running local MongoDB.
 4. prometheus.yml: Configuration file for Prometheus, likely used for monitoring and metrics.
+
+## CI/CD
+All apps are deployed on their respective cloud service using CI/CD pipeline.
+ - Backend deployments are handled using github actions. .github folder has all the files.
+ - Frontend is deployed on AWS amplify which connects to github repo directly. Look form amplify yml file in frontend directory.
+
+
+ ## Metrics with Promethues
+ I have also implemented basic level of metrics with prometheus. Grafana will do in future.
+
+
+ ## Messaging Queue 
+ Also want to reiterate that messaging queue is implemented using AWS SQS service. You can test it by loading a ticker from a search bar when the data is loaded first time it will tell you the source. 
+
+ check and uncheck the same ticker again you will see that data is now coming from mongo db. This happened because when you initally added a stock the date was fetched from the api but the analyzer also added the message to the queue to tell collecter to get the data for the user next time.
