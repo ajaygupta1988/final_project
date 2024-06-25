@@ -75,6 +75,7 @@ image = modal.Image.debian_slim(python_version="3.10.11").pip_install(
         "prometheus-fastapi-instrumentator",
         "pymongo[srv]",
         "motor",
+        "pandas",
         "pydantic-settings",
     ]
 )
