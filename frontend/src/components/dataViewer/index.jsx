@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import UplotReact from "uplot-react";
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import { Flex, useColorModeValue, useDimensions } from "@chakra-ui/react";
 import "uplot/dist/uPlot.min.css";
 
 export const chartColors = [
@@ -34,6 +34,8 @@ export const DataViwer = ({
   width = 1600,
   loading = false,
 }) => {
+  const elementRef = useRef();
+  const dimensions = useDimensions(elementRef, true);
   const chartTextColor = useColorModeValue("#718096", "#fff");
   const { columns, data } = dataSet;
 
@@ -91,7 +93,8 @@ export const DataViwer = ({
   }, [dataSet]);
 
   return (
-    <Flex overflowX={"overlay"}>
+    <Flex overflowX={"overlay"} ref={elementRef}>
+      {dimensions?.borderBox?.height}
       <Flex>{renderChart()}</Flex>
     </Flex>
   );
