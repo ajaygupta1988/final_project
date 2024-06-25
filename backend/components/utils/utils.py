@@ -35,7 +35,6 @@ class Utils:
         df = pd.DataFrame(data)[["unix_month_time", "symbol", "closing_price"]]
         ticker_value = df["symbol"].unique()[0]
         df = df.drop("symbol", axis=1).rename(columns={"closing_price": ticker_value})
-        df = df.sort_values("unix_month_time")
         max = df[ticker_value].max()
         min = df[ticker_value].min()
         result["columns"] = df.columns.to_list()

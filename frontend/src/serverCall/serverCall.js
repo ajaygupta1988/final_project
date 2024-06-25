@@ -30,7 +30,7 @@ export function serverCall(endpoint, showSucces, succesMessage,status ) {
             position: 'top',
             title: 'Success',
             status: 'success',
-            description:'This data is now coming from Mongo DB. Our queue worked', 
+            description:'This data is now coming from Mongo DB', 
             isClosable: true,
           });
         }

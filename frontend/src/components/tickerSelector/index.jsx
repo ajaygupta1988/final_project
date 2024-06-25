@@ -11,14 +11,19 @@ const TickerSelector = ({ value, onChange, options = [], onSelect }) => {
     <Stack>
       <FormControl>
         <FormLabel>Search Ticker</FormLabel>
-        <AutoComplete border={0} onSelectOption={onSelect}>
+        <AutoComplete
+          openOnFocus
+          border={0}
+          closeOnSelect
+          onSelectOption={onSelect}
+        >
           <AutoCompleteInput
             size="sm"
             variant="filled"
             value={null}
             onChange={onChange}
           />
-          <AutoCompleteList>
+          <AutoCompleteList minHeight={700}>
             {options?.map((item, cid) => (
               <AutoCompleteItem
                 key={`option-${cid}`}

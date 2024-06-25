@@ -54,9 +54,9 @@ const Home = () => {
     // if (dataInventory[picker]) {
     //   loadChartData(dataInventory[picker]);
     // } else {
+    setLoading(true);
     serverCall(`${getDataEndpoint}/${picker}`, true)
       .then((response) => {
-        setLoading(true);
         setDataInventory({
           [picker]: {
             columns: response.columns,
@@ -206,14 +206,21 @@ const Home = () => {
           <DrawerHeader>Messaging</DrawerHeader>
 
           <DrawerBody>
-            Messaging queue is implemented using AWS SQS. You can test its
-            functionality by loading a ticker from the search bar. The first
-            time you load the data, it will display the source as external. If
-            you check and uncheck the same ticker again, you'll notice that the
-            data is now coming from MongoDB. This occurs because, initially, the
-            stock data is fetched from the API. Concurrently, the analyzer adds
-            a message to the queue, instructing the collector to retrieve the
-            data for the user next time
+            <Stack spacing={10}>
+              <Text>
+                Messaging queue is implemented using AWS SQS. You can test its
+                functionality by loading a ticker from the search bar. The first
+                time you load the data, it will display a red banner with source
+                as as external.
+              </Text>
+              <Text>
+                If you check and uncheck the same ticker again, you'll notice
+                that the data is now coming from MongoDB. This occurs because,
+                initially, the stock data is fetched from the API. Concurrently,
+                the analyzer adds a message to the queue, instructing the
+                collector to retrieve the data for the user next time
+              </Text>
+            </Stack>
           </DrawerBody>
 
           <DrawerFooter>

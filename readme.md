@@ -97,9 +97,7 @@ it should return the following: If you key is different please update QUEUE_URL
 
 Primary purpose of this service is to collect data from an external server and save it to our mongodb database. This service will not be connected to the frontend.
 
-    ```bash
-    uvicorn backend.data_collector_app.main:data_collector_app --host=0.0.0.0 --port=${PORT:-5000}
-    ```
+`uvicorn backend.data_collector_app.main:data_collector_app --host=0.0.0.0 --port=${PORT:-5000}`
 
 Once the server is running, you can access the app at http://localhost:5000 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
 
@@ -114,10 +112,8 @@ Deployed app url: https://ajaygupta1988--data-collector-fastapi-app.modal.run/
 
 This is a Rest Api service connected to the web application and have api's to display data on the front end web application.
 
-    ```bash
-    uvicorn backend.data_analyzer_app.main:data_analyzer_app --host=0.0.0.0 --port=${PORT:-5001}
-    ```
-    
+`uvicorn backend.data_analyzer_app.main:data_analyzer_app --host=0.0.0.0 --port=${PORT:-5001}`
+
 Make sure the PORT is different from collector app.
    
 Once the server is running, you can access the app at http://localhost:5001 (by default). Use tools like cURL, Postman, or your browser to interact with the endpoints.
