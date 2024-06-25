@@ -23,7 +23,7 @@ import { serverCall } from "../../serverCall/serverCall";
 import { SunIcon, MoonIcon, QuestionIcon } from "@chakra-ui/icons";
 
 const defaultOptions = [
-  { symbol: "UBER" },
+  { symbol: "IBM" },
   { symbol: "AAPL" },
   { symbol: "GOOG" },
   { symbol: "NVDA" },
@@ -51,25 +51,25 @@ const Home = () => {
   }, []);
 
   const addDataToChart = (picker) => {
-    if (dataInventory[picker]) {
-      loadChartData(dataInventory[picker]);
-    } else {
-      serverCall(`${getDataEndpoint}/${picker}`)
-        .then((response) => {
-          setLoading(true);
-          setDataInventory({
-            [picker]: {
-              columns: response.columns,
-              data: response.data,
-              summary: response.summary,
-            },
-            ...dataInventory,
-          });
-          loadChartData(response);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }
+    // if (dataInventory[picker]) {
+    //   loadChartData(dataInventory[picker]);
+    // } else {
+    serverCall(`${getDataEndpoint}/${picker}`, true)
+      .then((response) => {
+        setLoading(true);
+        setDataInventory({
+          [picker]: {
+            columns: response.columns,
+            data: response.data,
+            summary: response.summary,
+          },
+          ...dataInventory,
+        });
+        loadChartData(response);
+        setLoading(false);
+      })
+      .finally(() => setLoading(false));
+    // }
   };
 
   const loadChartData = (dataToload) => {
@@ -203,10 +203,17 @@ const Home = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Project Information</DrawerHeader>
+          <DrawerHeader>Messaging</DrawerHeader>
 
           <DrawerBody>
-            <Text>Here</Text>
+            Messaging queue is implemented using AWS SQS. You can test its
+            functionality by loading a ticker from the search bar. The first
+            time you load the data, it will display the source as external. If
+            you check and uncheck the same ticker again, you'll notice that the
+            data is now coming from MongoDB. This occurs because, initially, the
+            stock data is fetched from the API. Concurrently, the analyzer adds
+            a message to the queue, instructing the collector to retrieve the
+            data for the user next time
           </DrawerBody>
 
           <DrawerFooter>
