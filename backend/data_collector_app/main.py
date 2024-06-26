@@ -40,11 +40,11 @@ def health_check():
 
 @data_collector_app.get(
     "/load_symbol_data",
-    description="API endpoint to listen to load stock ticker data requests in mongo database. The symbol will be recoverd from the queue, this is simply a ping that a new message is waiting for you to process. Constant running server is much better option for fast polling, but for the purpose of this project I kept it simple.",
+    description="API endpoint to listen to save stock ticker data requests in mongo database. The symbol will be recoverd from the queue, this is simply a ping that a new message is waiting for you to process. Constant running server is much better option for fast polling, but for the purpose of this project I kept it simple.",
 )
 async def load_symbol_data():
     try:
-        # Messaging queue consumer and get the symbol value from the queue. Its an overkill but for sake of learning
+        # Messaging queue consumer to get the symbol value from the queue.
         message_queue = MessagingQueue()
         message = message_queue.recieve_message()
         if len(message) > 0:
