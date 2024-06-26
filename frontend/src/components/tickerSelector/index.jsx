@@ -6,7 +6,13 @@ import {
 } from "@choc-ui/chakra-autocomplete";
 import { FormControl, FormLabel, Stack } from "@chakra-ui/react";
 
-const TickerSelector = ({ value, onChange, options = [], onSelect }) => {
+const TickerSelector = ({
+  value,
+  onChange,
+  options = [],
+  onSelect,
+  isLoading,
+}) => {
   return (
     <Stack>
       <FormControl>
@@ -15,15 +21,17 @@ const TickerSelector = ({ value, onChange, options = [], onSelect }) => {
           openOnFocus
           border={0}
           closeOnSelect
+          isLoading={isLoading}
           onSelectOption={onSelect}
         >
           <AutoCompleteInput
-            size="sm"
+            size="md"
             variant="filled"
             value={null}
+            maxLength={5}
             onChange={onChange}
           />
-          <AutoCompleteList minHeight={700}>
+          <AutoCompleteList minHeight={"80vh"}>
             {options?.map((item, cid) => (
               <AutoCompleteItem
                 key={`option-${cid}`}

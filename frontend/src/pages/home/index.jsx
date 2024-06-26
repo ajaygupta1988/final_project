@@ -40,6 +40,7 @@ const Home = () => {
   const [data, setData] = useState({ columns: [], data: [] });
   const [dataInventory, setDataInventory] = useState({});
   const [qloading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const loading = loader(qloading);
   const getDataEndpoint = "/get_symbol_data";
   const lookupEndpoint = "/symbol_lookup";
@@ -112,10 +113,14 @@ const Home = () => {
 
   // Throttled function using debounce
   const throttledSearchPicker = debounce((keywords, setTickerOptions) => {
-    if (keywords.length > 2) {
-      serverCall(`${lookupEndpoint}/${keywords}`).then((response) => {
-        setTickerOptions([...response]);
-      });
+    if (keywords.length > 3) {
+      setSearchLoading(true);
+      serverCall(`${lookupEndpoint}/${keywords}`)
+        .then((response) => {
+          setSearchLoading(false);
+          setTickerOptions([...response]);
+        })
+        .finally(() => setSearchLoading(false));
     }
   }, debounceDelay);
 
@@ -169,6 +174,7 @@ const Home = () => {
           options={tickerOptions?.length === 0 ? defaultOptions : tickerOptions}
           onChange={onSearchPicker}
           onSelect={onSelect}
+          isLoading={searchLoading}
         />
         <TickerList
           tickerList={tickers}
@@ -207,7 +213,7 @@ const Home = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Messaging</DrawerHeader>
+          <DrawerHeader>Messaging Queue</DrawerHeader>
 
           <DrawerBody>
             <Stack spacing={10}>
@@ -215,14 +221,15 @@ const Home = () => {
                 Messaging queue is implemented using AWS SQS. You can test its
                 functionality by loading a ticker from the search bar. The first
                 time you load the data, it will display a red banner with source
-                as as external.
+                as external.
               </Text>
               <Text>
-                If you check and uncheck the same ticker again, you'll notice
-                that the data is now coming from MongoDB. This occurs because,
-                initially, the stock data is fetched from the API. Concurrently,
-                the analyzer adds a message to the queue, instructing the
-                collector to retrieve the data for the user next time
+                If you check and uncheck the same ticker again after a minute or
+                so, you'll notice that the data is now coming from MongoDB. This
+                occurs because, initially, the stock data is fetched from the
+                External API. Concurrently, the analyzer adds a message to the
+                queue, instructing the collector to retrieve the data for the
+                user next time.
               </Text>
             </Stack>
           </DrawerBody>
